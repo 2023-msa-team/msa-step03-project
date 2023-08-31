@@ -1,6 +1,8 @@
 package com.example.userservice.user;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
@@ -12,6 +14,7 @@ import com.example.userservice._core.errors.exception.Exception500;
 import com.example.userservice._core.jwt.JwtTokenProvider;
 import com.example.userservice.user.dto.UserRequest;
 import com.example.userservice.user.dto.UserResponse;
+import com.example.userservice.user.dto.UserResponse.ListDTO;
 
 import lombok.RequiredArgsConstructor;
 
@@ -49,5 +52,16 @@ public class UserService {
         } catch (Exception e) {
             throw new Exception401("인증 토큰 생성에 실패하였습니다 : "+e.getMessage());
         }
+    }
+
+    public UserResponse.DetailDTO 유저상세(String id) {
+        User userPS = userRepository.findById(id)
+            .orElseThrow(() -> new Exception404("유저 id를 찾을 수 없습니다 : "+id));
+        return new UserResponse.DetailDTO(userPS);
+    }
+
+    public List<ListDTO> 유저목록() {
+        List<User> userListPS = userRepository.findAll();
+        return userListPS.stream().map(UserResponse.ListDTO::new).collect(Collectors.toList());
     }
 }
