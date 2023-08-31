@@ -9,14 +9,14 @@ public class UserResponse {
  
     @Getter @Setter
     public static class JoinDTO {
+        private String id;
         private String email;
         private String username;
-        private String pk;
-
+        
         public JoinDTO(User user) {
+            this.id = user.getId();
             this.email = user.getEmail();
             this.username = user.getUsername();
-            this.pk = user.getPk();
         }
     }
 }

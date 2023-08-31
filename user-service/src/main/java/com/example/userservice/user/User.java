@@ -19,29 +19,18 @@ import lombok.NoArgsConstructor;
 @Entity
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String pk;
+    private String id;
 
     @Column(unique = true)
     private String email;
     private String username;
     private String password;
-    private String roles;
 
     @Builder
-    public User(Long id, String pk, String email, String username, String password, String roles) {
+    public User(String id, String email, String username, String password) {
         this.id = id;
-        this.pk = pk;
         this.email = email;
         this.username = username;
         this.password = password;
-        this.roles = roles;
     }
-
-
-    public void setUUID(String pk){
-        this.pk = pk;
-    }
-
 }

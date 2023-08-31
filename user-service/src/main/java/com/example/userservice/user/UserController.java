@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.userservice._core.security.JwtTokenProvider;
+import com.example.userservice._core.jwt.JwtTokenProvider;
 import com.example.userservice._core.utils.ApiUtils;
 import com.example.userservice.user.dto.UserRequest;
 
@@ -30,13 +30,13 @@ public class UserController {
     }
 
     @PostMapping("/join")
-    public ResponseEntity<?> join(@Validated @RequestBody UserRequest.JoinDTO joinDTO, Errors errors) {
-        return ResponseEntity.ok(ApiUtils.success(userService.회원가입(joinDTO)));
+    public ResponseEntity<?> join(@Validated @RequestBody UserRequest.JoinDTO reqDTO, Errors errors) {
+        return ResponseEntity.ok(ApiUtils.success(userService.회원가입(reqDTO)));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Validated @RequestBody UserRequest.LoginDTO loginDTO, Errors errors) {
-        String jwt = userService.로그인(loginDTO);
+    public ResponseEntity<?> login(@Validated @RequestBody UserRequest.LoginDTO reqDTO, Errors errors) {
+        String jwt = userService.로그인(reqDTO);
         return ResponseEntity.ok().header(JwtTokenProvider.HEADER, jwt).body(ApiUtils.success(null));
     }
 
