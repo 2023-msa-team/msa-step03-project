@@ -1,21 +1,37 @@
 package com.example.userservice._core.config;
 
+
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 
-import com.example.userservice._core.jwt.JwtAuthorizationFilter;
+import com.example.userservice._core.filter.CorsFilter;
+import com.example.userservice._core.filter.JwtAuthorizationFilter;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 @Configuration
 public class FilterConfig {
+
+    private final Environment env;
+
+    @Bean
+    FilterRegistrationBean<CorsFilter> corsFilter() {
+        FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<>(
+                new CorsFilter());
+        bean.setOrder(0); // 낮은 번호 부터 실행
+        return bean;
+    }
 
     @Bean
     FilterRegistrationBean<JwtAuthorizationFilter> jwtAuthorizationFilter() {
         FilterRegistrationBean<JwtAuthorizationFilter> bean = new FilterRegistrationBean<>(
-                new JwtAuthorizationFilter());
+                new JwtAuthorizationFilter(env));
         bean.addUrlPatterns("/users/*");
         bean.addUrlPatterns("/orders/*");
-        bean.setOrder(0); // 낮은 번호 부터 실행
+        bean.setOrder(1); // 낮은 번호 부터 실행
         return bean;
     }
 }

@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.userservice._core.jwt.JwtTokenProvider;
 import com.example.userservice._core.utils.ApiUtils;
+import com.example.userservice._core.utils.JwtTokenUtils;
 import com.example.userservice.user.dto.UserRequest;
 import com.example.userservice.user.dto.UserResponse;
 
@@ -42,7 +42,7 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@Validated @RequestBody UserRequest.LoginDTO reqDTO, Errors errors) {
         UserResponse.LoginDTO respDTO = userService.로그인(reqDTO);
-        return ResponseEntity.ok().header(JwtTokenProvider.HEADER, respDTO.getJwt()).body(ApiUtils.success(respDTO));
+        return ResponseEntity.ok().header("Authorization", respDTO.getJwt()).body(ApiUtils.success(respDTO));
     }
 
     @GetMapping("/users/{id}")

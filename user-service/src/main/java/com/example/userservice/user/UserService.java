@@ -5,13 +5,14 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.mindrot.jbcrypt.BCrypt;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.userservice._core.errors.exception.Exception401;
 import com.example.userservice._core.errors.exception.Exception404;
 import com.example.userservice._core.errors.exception.Exception500;
-import com.example.userservice._core.jwt.JwtTokenProvider;
+import com.example.userservice._core.utils.JwtTokenUtils;
 import com.example.userservice.user.dto.UserRequest;
 import com.example.userservice.user.dto.UserResponse;
 import com.example.userservice.user.dto.UserResponse.ListDTO;
@@ -23,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final Environment env;
 
     @Transactional
     public UserResponse.JoinDTO 회원가입(UserRequest.JoinDTO reqDTO) {
@@ -47,7 +49,7 @@ public class UserService {
             throw new Exception401("아이디 혹은 비밀번호가 틀렸습니다");
         }
         try {
-            String jwt = JwtTokenProvider.create(userPS);
+            String jwt = JwtTokenUtils.create(userPS, env);
             return new UserResponse.LoginDTO(userPS.getId(), jwt);
         } catch (Exception e) {
             throw new Exception401("인증 토큰 생성에 실패하였습니다 : "+e.getMessage());
