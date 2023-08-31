@@ -1,7 +1,6 @@
 package com.example.userservice.user.dto;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import com.example.userservice.user.User;
@@ -64,7 +63,7 @@ public class UserResponse {
             private Integer qty;
             private Integer unitPrice;
             private Integer totalPrice;
-            private Date createdAt;
+            private String createdAt;
         }
     }
 
