@@ -35,8 +35,7 @@ public class UserService {
         }
     }
 
-    public String 로그인(UserRequest.LoginDTO reqDTO) {
-
+    public UserResponse.LoginDTO 로그인(UserRequest.LoginDTO reqDTO) {
         User userPS = userRepository.findByEmail(reqDTO.getEmail())
                 .orElseThrow(() -> new Exception404("이메일을 찾을 수 없습니다 : "+reqDTO.getEmail()));
         boolean isValid = BCrypt.checkpw(reqDTO.getPassword(), userPS.getPassword());
@@ -45,7 +44,8 @@ public class UserService {
             throw new Exception401("아이디 혹은 비밀번호가 틀렸습니다");
         }
         try {
-            return JwtTokenProvider.create(userPS);
+            String jwt = JwtTokenProvider.create(userPS);
+            return new UserResponse.LoginDTO(userPS.getId(), jwt);
         } catch (Exception e) {
             throw new Exception401("인증 토큰 생성에 실패하였습니다 : "+e.getMessage());
         }

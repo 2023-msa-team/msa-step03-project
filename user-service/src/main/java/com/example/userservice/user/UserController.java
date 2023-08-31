@@ -2,6 +2,7 @@ package com.example.userservice.user;
 
 import javax.validation.Valid;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.userservice._core.jwt.JwtTokenProvider;
 import com.example.userservice._core.utils.ApiUtils;
 import com.example.userservice.user.dto.UserRequest;
+import com.example.userservice.user.dto.UserResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -36,8 +38,8 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Validated @RequestBody UserRequest.LoginDTO reqDTO, Errors errors) {
-        String jwt = userService.로그인(reqDTO);
-        return ResponseEntity.ok().header(JwtTokenProvider.HEADER, jwt).body(ApiUtils.success(null));
+        UserResponse.LoginDTO respDTO = userService.로그인(reqDTO);
+        return ResponseEntity.ok().header(JwtTokenProvider.HEADER, respDTO.getJwt()).body(ApiUtils.success(respDTO));
     }
 
 }
