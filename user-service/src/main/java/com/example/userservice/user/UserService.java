@@ -30,9 +30,9 @@ public class UserService {
     public UserResponse.JoinDTO 회원가입(UserRequest.JoinDTO reqDTO) {
         try {
             // 동일한 서버가 2개 생기고, 디비가 2개 생기면, id를 auto_increment로 하면 사용자를 구분할 수 없음
-            String id = UUID.randomUUID().toString();
+            String uuid = UUID.randomUUID().toString();
             String encPassword = BCrypt.hashpw(reqDTO.getPassword(), BCrypt.gensalt());
-            User userPS = userRepository.save(reqDTO.toEntity(id, encPassword));
+            User userPS = userRepository.save(reqDTO.toEntity(uuid, encPassword));
             UserResponse.JoinDTO respDTO = new UserResponse.JoinDTO(userPS);
             return respDTO;
         } catch (Exception e) {

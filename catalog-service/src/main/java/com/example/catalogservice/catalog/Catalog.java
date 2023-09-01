@@ -18,8 +18,6 @@ import lombok.NoArgsConstructor;
 public class Catalog {
     @Id
     private String id;
-
-    @Column(unique = true)
     private String name;
     private Integer stock;
     private Integer unitPrice;
