@@ -13,11 +13,11 @@ import javax.servlet.http.HttpServletResponse;
 public class CorsFilter implements Filter {
 
 	@Override
-	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
+	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
 			throws IOException, ServletException {
 		System.out.println("CORS 필터 작동");
 		HttpServletRequest request = (HttpServletRequest) req;
-		HttpServletResponse response = (HttpServletResponse) res;
+		HttpServletResponse response = (HttpServletResponse) resp;
 
         String origin = request.getHeader("Origin");
 		response.setHeader("Access-Control-Expose-Headers", "Authorization");
