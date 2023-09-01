@@ -17,27 +17,83 @@ spring:
   cloud:
     gateway:
       default-filters:
-        - name: GlobalFilter
-          args:
-            baseMessage: Spring Cloud Gateway GlobalFilter
-            preLogger: true
-            postLogger: true
+        - name: CorsFilter
       routes:
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
-            - Path=/user-service/**
+            - Path=/user-service
+            - Method=GET
           filters:
+            - RemoveRequestHeader=Cookie
             - RewritePath=/user-service(/(?<segment>.+))?, /$\{segment}
+
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user-service/login
+            - Method=POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/user-service(/(?<segment>.+))?, /$\{segment}
+
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user-service/join
+            - Method=POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/user-service(/(?<segment>.+))?, /$\{segment}
+
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user-service/**
+            - Method=GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/user-service(/(?<segment>.+))?, /$\{segment}
+            - name: JwtAuthorizationFilter
+
+        - id: catalog-service
+          uri: lb://CATALOG-SERVICE
+          predicates:
+            - Path=/catalog-service
+            - Method=GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/catalog-service(/(?<segment>.+))?, /$\{segment}
+
         - id: catalog-service
           uri: lb://CATALOG-SERVICE
           predicates:
             - Path=/catalog-service/**
           filters:
+            - RemoveRequestHeader=Cookie
             - RewritePath=/catalog-service(/(?<segment>.+))?, /$\{segment}
+            - name: JwtAuthorizationFilter
+
+        - id: order-service
+          uri: lb://ORDER-SERVICE
+          predicates:
+            - Path=/order-service
+            - Method=GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/order-service(/(?<segment>.+))?, /$\{segment}
+
         - id: order-service
           uri: lb://ORDER-SERVICE
           predicates:
             - Path=/order-service/**
           filters:
+            - RemoveRequestHeader=Cookie
             - RewritePath=/order-service(/(?<segment>.+))?, /$\{segment}
+            - name: JwtAuthorizationFilter
+
+
+
+token:
+  exp: 864000000
+  secret: metacoding

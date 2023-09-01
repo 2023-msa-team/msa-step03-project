@@ -8,8 +8,9 @@
 <body>
     <script>
         async function go(){
-            let response = await fetch("http://localhost:8000/user-service");;
+            let response = await fetch("http://localhost:8000/user-service");
             let responseBody = await response.json();
+            console.log(responseBody);
         }
         
         go();

@@ -2,7 +2,10 @@ package com.example.userservice.user;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
@@ -12,7 +15,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.userservice._core.utils.ApiUtils;
+import com.example.userservice._core.utils.JwtTokenUtils;
 import com.example.userservice.user.dto.UserRequest;
 import com.example.userservice.user.dto.UserResponse;
 
@@ -26,7 +31,15 @@ public class UserController {
     private final Environment env;
 
     @GetMapping("/")
-    public ResponseEntity<?> healthCheck() {
+    public ResponseEntity<?> healthCheck(HttpServletRequest request) {
+        String jwt = request.getHeader(HttpHeaders.AUTHORIZATION);
+        System.out.println("jwt 토큰 검증 : " + jwt);
+        if (jwt != null) {
+            DecodedJWT decodedJWT = JwtTokenUtils.verify(jwt, env);
+            String subject = decodedJWT.getSubject();
+            System.out.println("userId : " + subject);
+        }
+
         String responseBody = String.format("user-service on Port %s", env.getProperty("local.server.port"));
         return ResponseEntity.ok(ApiUtils.success(responseBody));
     }
@@ -44,13 +57,20 @@ public class UserController {
     }
 
     @GetMapping("/users/{id}")
-    public ResponseEntity<?> findById(@PathVariable String id){
+    public ResponseEntity<?> findById(@PathVariable String id, HttpServletRequest request) {
+        String jwt = request.getHeader(HttpHeaders.AUTHORIZATION);
+        System.out.println("jwt 토큰 검증 : " + jwt);
+        if (jwt != null) {
+            DecodedJWT decodedJWT = JwtTokenUtils.verify(jwt, env);
+            String subject = decodedJWT.getSubject();
+            System.out.println("userId : " + subject);
+        }
         UserResponse.DetailDTO respDTO = userService.유저상세(id);
         return ResponseEntity.ok(ApiUtils.success(respDTO));
     }
 
     @GetMapping("/users")
-    public ResponseEntity<?> findAll(){
+    public ResponseEntity<?> findAll() {
         List<UserResponse.ListDTO> respDTOs = userService.유저목록();
         return ResponseEntity.ok(ApiUtils.success(respDTOs));
     }

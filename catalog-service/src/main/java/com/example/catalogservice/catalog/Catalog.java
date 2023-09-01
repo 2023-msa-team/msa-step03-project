@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,6 +23,15 @@ public class Catalog {
     private Integer stock;
     private Integer unitPrice;
     private LocalDateTime createdAt;
+
+    @Builder
+    public Catalog(String id, String name, Integer stock, Integer unitPrice, LocalDateTime createdAt) {
+        this.id = id;
+        this.name = name;
+        this.stock = stock;
+        this.unitPrice = unitPrice;
+        this.createdAt = createdAt;
+    }
 
     @PrePersist
     void onCreatedAt(){
