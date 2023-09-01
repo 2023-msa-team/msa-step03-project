@@ -7,6 +7,7 @@
 </head>
 <body>
     <script>
+        // CORS 필터 테스트 : live Server (vs code) - Prefright
         async function go(){
             let response = await fetch("http://localhost:8000/user-service");
             let responseBody = await response.json();

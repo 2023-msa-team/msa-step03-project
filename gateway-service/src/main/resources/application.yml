@@ -28,7 +28,7 @@ spring:
             - RemoveRequestHeader=Cookie
             - RewritePath=/user-service(/(?<segment>.+))?, /$\{segment}
 
-        - id: user-service
+        - id: user-service-login
           uri: lb://USER-SERVICE
           predicates:
             - Path=/user-service/login
@@ -37,7 +37,7 @@ spring:
             - RemoveRequestHeader=Cookie
             - RewritePath=/user-service(/(?<segment>.+))?, /$\{segment}
 
-        - id: user-service
+        - id: user-service-join
           uri: lb://USER-SERVICE
           predicates:
             - Path=/user-service/join
@@ -46,7 +46,7 @@ spring:
             - RemoveRequestHeader=Cookie
             - RewritePath=/user-service(/(?<segment>.+))?, /$\{segment}
 
-        - id: user-service
+        - id: user-service-jwt
           uri: lb://USER-SERVICE
           predicates:
             - Path=/user-service/**
@@ -65,7 +65,7 @@ spring:
             - RemoveRequestHeader=Cookie
             - RewritePath=/catalog-service(/(?<segment>.+))?, /$\{segment}
 
-        - id: catalog-service
+        - id: catalog-service-jwt
           uri: lb://CATALOG-SERVICE
           predicates:
             - Path=/catalog-service/**
@@ -83,7 +83,7 @@ spring:
             - RemoveRequestHeader=Cookie
             - RewritePath=/order-service(/(?<segment>.+))?, /$\{segment}
 
-        - id: order-service
+        - id: order-service-jwt
           uri: lb://ORDER-SERVICE
           predicates:
             - Path=/order-service/**

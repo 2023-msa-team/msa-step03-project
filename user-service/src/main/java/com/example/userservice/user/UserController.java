@@ -13,9 +13,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ServerWebExchange;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.example.userservice._core.errors.exception.Exception401;
+import com.example.userservice._core.errors.exception.Exception403;
 import com.example.userservice._core.utils.ApiUtils;
 import com.example.userservice._core.utils.JwtTokenUtils;
 import com.example.userservice.user.dto.UserRequest;
@@ -57,14 +61,11 @@ public class UserController {
     }
 
     @GetMapping("/users/{id}")
-    public ResponseEntity<?> findById(@PathVariable String id, HttpServletRequest request) {
-        String jwt = request.getHeader(HttpHeaders.AUTHORIZATION);
-        System.out.println("jwt 토큰 검증 : " + jwt);
-        if (jwt != null) {
-            DecodedJWT decodedJWT = JwtTokenUtils.verify(jwt, env);
-            String subject = decodedJWT.getSubject();
-            System.out.println("userId : " + subject);
+    public ResponseEntity<?> findById(@PathVariable String id, @RequestHeader("X-Authorization-Id") String loginUserId) {
+        if(!id.equals(loginUserId)){
+            throw new Exception403("해당 유저는 권한이 없습니다 : "+loginUserId);
         }
+
         UserResponse.DetailDTO respDTO = userService.유저상세(id);
         return ResponseEntity.ok(ApiUtils.success(respDTO));
     }

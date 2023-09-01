@@ -19,6 +19,8 @@ import com.example.gatewayservice.utils.ApiUtils;
 import com.example.gatewayservice.utils.JwtTokenUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import lombok.Getter;
+import lombok.Setter;
 import reactor.core.publisher.Mono;
 
 @Component
@@ -34,9 +36,10 @@ public class JwtAuthorizationFilter extends AbstractGatewayFilterFactory<JwtAuth
     }
 
     @Override
-    public GatewayFilter apply(Config config) {
-        System.out.println("JwtAuthorizationFilter 동작");
+    public GatewayFilter apply(JwtAuthorizationFilter.Config config) {
+        
         return (exchange, chain) -> {
+            System.out.println("JwtAuthorizationFilter 동작");
             // reactive 타입 (flux, mono)
             ServerHttpRequest request = exchange.getRequest();
 
@@ -53,6 +56,13 @@ public class JwtAuthorizationFilter extends AbstractGatewayFilterFactory<JwtAuth
                 if(id == null || id.isBlank()){
                     return onError(exchange, "토큰 페이로드 검증 실패", HttpStatus.UNAUTHORIZED);
                 }
+
+                // 마이크로서비스로 헤더 정보 넘기는 법
+                // mutate() 메서드는 ServerHttpRequest의 불변성(Immutability)을 유지하면서도 수정된 새로운 ServerHttpRequest 객체를 생성합니다. 
+                // 이를 통해 원래의 요청 객체를 변경하지 않고 새로운 속성을 추가하거나 수정할 수 있습니다.
+                request.mutate().header("X-Authorization-Id", id);
+
+                System.out.println("exchage에 값 담김 : "+id);
             } catch (SignatureVerificationException | JWTDecodeException ve) {
                 return onError(exchange, "토큰 검증 실패", HttpStatus.UNAUTHORIZED);
             } catch (TokenExpiredException tee) {
@@ -61,8 +71,9 @@ public class JwtAuthorizationFilter extends AbstractGatewayFilterFactory<JwtAuth
 
             // 다음 필터로 이동
             return chain.filter(exchange);
-        };
+        }; 
     }
+
 
     public static class Config {
 
